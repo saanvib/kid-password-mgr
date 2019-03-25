@@ -1,0 +1,19 @@
+{
+  "name":"Safe Me",
+  "version": "1.0",
+  "manifest_version": 2,
+
+  "description": "This chrome extension helps children keep their simple yet powerful passwords in an easily-accesible online toolkit",
+
+  "browser_action": {
+    "default_title": "Safe Me",
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "scripts": ["js/background.js"],
+    "persistent": false
+  },
+  "permissions": [
+    "http://*/*", "https://*/*", "storage"
+  ]
+}
