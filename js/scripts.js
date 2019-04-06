@@ -1,15 +1,40 @@
+var g_passwordlist = [];
+
 function logout() {
   chrome.storage.local.set({'signed_in': false});
   window.location.assign("popup_sign_in.html")
 }
 var add_a_password = document.getElementById("addpassword")
 if (add_a_password) {
-add_a_password.addEventListener("click", add_password)
+  add_a_password.addEventListener("click", add_password)
 }
 function add_password() {
-window.location.assign("createpassword.html");
+  window.location.assign("createpassword.html");
 }
-var g_passwordlist = null;
+
+function save_passwd() {
+    var website_name = document.getElementById("website_name").value;
+    var login_id = document.getElementById("login_id").value;
+    var passwd = document.getElementById("passwd").value;
+
+    chrome.storage.local.get('passwordlist', function(data){
+      g_passwordlist = data.passwordlist;
+      g_passwordlist.push({"url":website_name, "login":login_id, "passwd":passwd})
+      chrome.storage.local.set({"passwordlist":g_passwordlist},
+        function(data){window.location.assign("passwordscreen.html")});
+    });
+     // do not worry about overwriting - just add new
+
+
+    // var encrypted = CryptoJS.AES.encrypt(JSON.stringify(g_passwordlist), "myPassword");
+    // alert(encrypted);
+    // var decrypted = CryptoJS.AES.decrypt(encrypted, "myPassword");
+    // var str = decrypted.toString(CryptoJS.enc.Utf8);
+    //
+    // alert(str);
+
+}
+
 function sign_in() {
   window.location.assign("animals.html?create=no")
 }
@@ -63,7 +88,6 @@ function register_choice(event) {
         // save the password so that it can be checked later (scenario for creating a password)
         if (create_path) {
           chrome.storage.local.set({"password": password});
-          alert("password is: " + password);
           window.location.assign("passwordscreen.html");
         }
         else {
@@ -71,7 +95,6 @@ function register_choice(event) {
           chrome.storage.local.get('password', function(data) { 
             if (data.password === password) {
               chrome.storage.local.set({"signed_in": true}, function() {
-              console.log('User signed in');
               window.location.assign("passwordscreen.html");
               });
             }
@@ -93,7 +116,7 @@ function register_choice(event) {
 function copy_to_clipboard(event)  {
   // str is the password
   var url = event.target.id;
-
+  // assuming only one password per url
   str = get_password_for_url(url)
   const el = document.createElement('textarea');
   el.value = str;
@@ -116,10 +139,16 @@ if (x) {
     x[i].addEventListener("click", register_choice)
   }
 }
+
+var passwd_save_btn = document.getElementById("save_info");
+if (passwd_save_btn)
+  passwd_save_btn.addEventListener("click", save_passwd);
+
 var logout_button = document.getElementById('logout')
 if (logout_button)
   logout_button.addEventListener("click", logout)
 var el = document.getElementById('create_account');
+
 if (el)
   el.addEventListener("click", create_account);
 
@@ -137,9 +166,11 @@ function get_password_for_url(url) {
 function get_password_from_storage() {
   chrome.storage.local.get('passwordlist', function(data) { 
     g_passwordlist = data.passwordlist;
-    passwords_to_table();
-    register_copy();
-      });
+    if (window.location.href.includes("passwordscreen")) {
+      passwords_to_table();
+      register_copy();
+    }
+  });
 }
 
 
@@ -170,7 +201,12 @@ function passwords_to_table() {
   }
 }
 
-get_password_from_storage()
+
+window.onload = function() {
+  if (window.location.href.includes("passwordscreen")) {
+    get_password_from_storage()
+  }
+};
 
 function register_copy() {
   var copy_button = document.getElementsByClassName("copybutton");

@@ -1,33 +1,41 @@
 <html>
 <head>
   <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <!-- Scripts -->
+  <script src="js/jquery-2.0.3.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
 
-    <link rel="stylesheet" href="style.css">
+  <!-- Cascading Style Sheets -->
+  <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+  <link href="css/custom.css" rel="stylesheet" media="screen">
 </head>
 <body>
 <h2>Click your favorite animal:</h2>
+<br>
+<center>
 <table>
   <tr>
-   	<td><img id="cat" class="table-cell userchoice animals" src="images/4-ways-cheer-up-depressed-cat.jpg" alt="cat"></td>
-    <td><img id="snake" class="table-cell userchoice animals" src="images/snake.jpg" alt="snake"></td>
-    <td><img id="dog" class="table-cell userchoice animals" src="images/dog.jpg" alt="dog"></td>
+   	<td><button><img id="cat" class="table-cell userchoice animals img-thumbnail" src="images/4-ways-cheer-up-depressed-cat.jpg" alt="cat"></button></td>
+    <td><button><img id="snake" class="table-cell userchoice animals img-thumbnail" src="images/snake.jpg" alt="snake"></button></td>
+    <td><button><img id="dog" class="table-cell userchoice animals img-thumbnail" src="images/dog.jpg" alt="dog"></button></td>
   </tr>
   <tr>
-    <td><img id="frog" class="table-cell userchoice animals" src="images/frog.jpg" alt="frog"></td>
-    <td><img id="hamster" class="table-cell userchoice animals" src="images/Hamster.jpg" alt="hamster"></td>
-    <td><img id="turtle" class="table-cell userchoice animals" src="images/turtle.jpg" alt="turtle"></td>
+    <td><button><img id="frog" class="table-cell userchoice animals img-thumbnail" src="images/frog.jpg" alt="frog"></button></td>
+    <td><button><img id="hamster" class="table-cell userchoice animals img-thumbnail" src="images/Hamster.jpg" alt="hamster"></button></td>
+    <td><button><img id="turtle" class="table-cell userchoice animals img-thumbnail" src="images/turtle.jpg" alt="turtle"></button></td>
   </tr>
   <tr>
-    <td><img id="griffin" class="table-cell userchoice animals" src="images/griffin.jpg" alt="griffin"></td>
-    <td><img id="unicorn" class="table-cell userchoice animals" src="images/unicorn.jpg" alt="unicorn"></td>
-    <td><img id="dragon" class="table-cell userchoice animals" src="images/dragon.jpg" alt="dragon"></td>
+    <td><button><img id="griffin" class="table-cell userchoice animals img-thumbnail" src="images/griffin.jpg" alt="griffin"></button></td>
+    <td><button><img id="unicorn" class="table-cell userchoice animals img-thumbnail" src="images/unicorn.jpg" alt="unicorn"></button></td>
+    <td><button><img id="dragon" class="table-cell userchoice animals img-thumbnail" src="images/dragon.jpg" alt="dragon"></button></td>
   </tr>
 </table>
-<script type="text/javascript" src="js/scripts.js"></script>
+</center>
+
 <button id="logout">Logout</button>
+<script type="text/javascript" src="js/scripts.js"></script>
 </body>
 </html>
