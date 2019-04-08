@@ -1,15 +1,9 @@
 var g_passwordlist = [];
 
 function logout() {
-  chrome.storage.local.set({'signed_in': false});
-  window.location.assign("popup_sign_in.html")
-}
-var add_a_password = document.getElementById("addpassword")
-if (add_a_password) {
-  add_a_password.addEventListener("click", add_password)
-}
-function add_password() {
-  window.location.assign("createpassword.html");
+  chrome.storage.local.set({'signed_in': false}, function () {
+    window.location.assign("popup.html");
+  });
 }
 
 function save_passwd() {
@@ -17,11 +11,13 @@ function save_passwd() {
     var login_id = document.getElementById("login_id").value;
     var passwd = document.getElementById("passwd").value;
 
-    chrome.storage.local.get('passwordlist', function(data){
+    alert(website_name + " " + login_id + " " + passwd);
+    chrome.storage.local.get('passwordlist', function(data) {
       g_passwordlist = data.passwordlist;
       g_passwordlist.push({"url":website_name, "login":login_id, "passwd":passwd})
-      chrome.storage.local.set({"passwordlist":g_passwordlist},
-        function(data){window.location.assign("passwordscreen.html")});
+      chrome.storage.local.set({"passwordlist":g_passwordlist}, function() {
+          window.location.assign("passwordscreen.html");
+      });
     });
      // do not worry about overwriting - just add new
 
@@ -48,14 +44,19 @@ function register_choice(event) {
   var choice = "";
   if (event.target.className.includes("animals")) {
     var url = window.location.href;
+    var backurl = "popup_sign_in.html";
     var newurl = "color.html";
     if (url.includes("yes")) {
       newurl += "?create=yes";
+      backurl += "?create=yes";
     }
     else
       newurl += "?create=no";
     choice = event.target.id;
     chrome.storage.local.set({'animal_choice': choice});
+    var backbtn = document.getElementById("back-button");
+    if (backbtn)
+      backbtn.href = backurl;
     window.location.assign(newurl)
   }
   else if (event.target.className.includes("color")) {
@@ -63,19 +64,32 @@ function register_choice(event) {
     chrome.storage.local.set({'color_choice': choice})
     var url = window.location.href;
     var newurl = "hobbies.html";
+    var backurl = "animals.html";
     if (url.includes("yes")) {
       newurl += "?create=yes";
+      backurl += "?create=yes";
     }
     else
       newurl += "?create=no";
+    var backbtn = document.getElementById("back-button");
+    if (backbtn)
+      backbtn.href = backurl;
     window.location.assign(newurl)
   }
   else if (event.target.className.includes("hobbies")) {
     var create_path = false;
     var url = window.location.href;
+    var backurl = "color.html";
     if (url.includes("yes")) {
       create_path = true;
+      backurl += "?create=yes";
     }
+    else {
+      backurl += "?create=no";
+    }
+    var backbtn = document.getElementById("back-button");
+    if (backbtn)
+      backbtn.href = backurl;
     choice = event.target.id;
     chrome.storage.local.set({'hobby_choice': choice});
     var animalchoice = "";
@@ -88,6 +102,7 @@ function register_choice(event) {
         // save the password so that it can be checked later (scenario for creating a password)
         if (create_path) {
           chrome.storage.local.set({"password": password});
+          chrome.storage.local.set({"account_exists": true});
           window.location.assign("passwordscreen.html");
         }
         else {
@@ -140,18 +155,6 @@ if (x) {
   }
 }
 
-var passwd_save_btn = document.getElementById("save_info");
-if (passwd_save_btn)
-  passwd_save_btn.addEventListener("click", save_passwd);
-
-var logout_button = document.getElementById('logout')
-if (logout_button)
-  logout_button.addEventListener("click", logout)
-var el = document.getElementById('create_account');
-
-if (el)
-  el.addEventListener("click", create_account);
-
 
 // {"passwordlist":[{"url":"https://www.google.com", "login":"saanvi.bhargava@gmail.com", "passwd":"password1111"}, ]}
 function get_password_for_url(url) {
@@ -187,26 +190,64 @@ function passwords_to_table() {
     cell.appendChild(text)
     row.appendChild(cell)
     var cell = document.createElement("td")
+    //cell.align = "center";
     var text = document.createTextNode(g_passwordlist[i].login)
     cell.appendChild(text)
     row.appendChild(cell)
     var cell = document.createElement("td")
+    cell.align = "center";
     var btn = document.createElement("button")
     btn.className = "copybutton"
     btn.id = g_passwordlist[i].url;
-    btn.innerHTML = "Copy";
+    var img = document.createElement("img");
+    img.src = "images/copy-image.png";
+    img.style.height = "20px";
+    img.style.width = "20px";
+    img.id = g_passwordlist[i].url;
+    btn.appendChild(img);
     cell.appendChild(btn)
     row.appendChild(cell)
     passwd_table.appendChild(row)
   }
 }
 
-
-window.onload = function() {
-  if (window.location.href.includes("passwordscreen")) {
-    get_password_from_storage()
+//generate a password with num letters and digits mixed
+function generate_random_passwd(num_of_letters) {
+  var generated_password = "";
+  for (var i = 0; i < num_of_letters; i++) {
+    var c = Math.round(Math.random());
+    if (c===0) {
+      // 52 letters (capitalized and non-capitalized)
+      var decide = Math.round(Math.random());
+      //65 - 90 Capital letters
+      // 97-122
+      if (decide===0) {
+        // small letters
+        var small_letter = (Math.round(Math.random() * 26) + 97);
+        generated_password += String.fromCharCode(small_letter);
+      }
+      else {
+        // big letters
+        var big_letter = (Math.round(Math.random() * 26) + 65);
+        generated_password += String.fromCharCode(big_letter);
+      }
+    }
+    else {
+      // numbers
+      var num = Math.round(Math.random() * 9);
+      generated_password+=num;
+    }
   }
-};
+    return generated_password;
+}
+
+function fill_passwd() {
+  var passwd = generate_random_passwd(8);
+  var p = document.getElementById("passwd");
+  p.value = passwd;
+  alert(passwd);
+}
+
 
 function register_copy() {
   var copy_button = document.getElementsByClassName("copybutton");
@@ -216,4 +257,57 @@ function register_copy() {
       copy_button[i].addEventListener("click", copy_to_clipboard)
     }
   }
+}
+
+
+window.onload = function() {
+  if (window.location.href.includes("popup.html")) {
+    chrome.storage.local.get('signed_in', function(data) { 
+      if (data.signed_in)
+      { 
+        window.location.assign("passwordscreen.html")
+      }
+      else
+      { 
+        window.location.assign("popup_sign_in.html")
+      } 
+     }); 
+  }
+
+  if (window.location.href.includes("passwordscreen")) {
+    get_password_from_storage()
+  }
+
+  if (window.location.href.includes("popup_sign_in")) {
+    chrome.storage.local.get('account_exists', function(data) { 
+      if (data.account_exists) {
+        var btn = document.getElementById("create_account");
+        btn.style.display = "none";
+      }
+      else {
+        var btn = document.getElementById("sign_in_button");
+        btn.style.display = "none";
+      }
+    });
+  }
+
+  if (window.location.href.includes("createpassword")) {
+    var gen_passwd_btn = document.getElementById("generate_passwd");
+    if (gen_passwd_btn)
+      gen_passwd_btn.addEventListener("click", fill_passwd);
+
+    var passwd_save_btn = document.getElementById("save_info");
+      if (passwd_save_btn)
+        passwd_save_btn.addEventListener("click", save_passwd);
+  }
+
+  var logout_button = document.getElementById('logout');
+  if (logout_button) {
+    logout_button.addEventListener("click", logout)
+  }
+
+  var el = document.getElementById('create_account');
+  if (el)
+    el.addEventListener("click", create_account);
+
 }
