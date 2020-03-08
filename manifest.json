@@ -1,15 +1,22 @@
 {
   "name":"Safe Me",
+  "short_name":"Safe Me",
   "version": "1.0",
   "manifest_version": 2,
-
-  "description": "This chrome extension helps children keep their simple yet powerful passwords in an easily-accesible online toolkit.",
+  "icons": { "256": "images/key-icon.png" },
+  "description": "This chrome extension helps children keep their passwords in an easily-accesible online toolkit.",
 
   "browser_action": {
     "default_title": "Safe Me",
     "default_popup": "popup.html"
   },
+  "content_scripts": [
+    {
+      "matches": ["https://*/*", "http://*/*"],
+      "js": ["js/findPassField.js"]
+    }
+  ],
   "permissions": [
-    "http://*/*", "https://*/*", "storage"
+    "storage", "activeTab"
   ]
 }
