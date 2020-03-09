@@ -12,7 +12,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://*/*", "http://*/*"],
+      "matches": ["https://*/*"],
       "js": ["js/findPassField.js"]
     }
   ],

@@ -19,9 +19,6 @@ function save_passwd() {
       g_passwordlist = data.passwordlist;
       if (!g_passwordlist)
         g_passwordlist = [];
-    else {
-      g_passwordlist = [];
-    }
     g_passwordlist.push({
       "url": website_name,
       "login": login_id,
